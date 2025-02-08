@@ -69,15 +69,6 @@ else
     echo "Пользователь $NEW_USER уже существует."
 fi
 
-# Удаление ненужных пользователей (если есть)
-echo "Проверка ненужных пользователей..."
-for user in $(awk -F: '{ print $1 }' /etc/passwd); do
-    if [[ "$user" != "root" && "$user" != "$NEW_USER" ]]; then
-        echo "Удаление пользователя $user..."
-        deluser --remove-home "$user"
-    fi
-done
-
 # Настройка брандмауэра UFW
 echo "Настройка брандмауэра UFW..."
 ufw default deny incoming
