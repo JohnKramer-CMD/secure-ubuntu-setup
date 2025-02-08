@@ -13,7 +13,36 @@ apt dist-upgrade -y
 
 # Установка необходимых пакетов
 echo "Установка необходимых пакетов..."
-apt install -y ufw curl vim git
+apt install -y ufw curl vim git ntp fail2ban
+
+# Проверка и настройка временной зоны
+echo "Проверка и настройка временной зоны..."
+timedatectl set-timezone Europe/Moscow  # Установите вашу временную зону
+timedatectl set-local-rtc 0
+
+# Проверка и настройка NTP (Синхронизация времени)
+echo "Проверка и настройка NTP..."
+apt install -y ntp
+systemctl enable ntp
+systemctl start ntp
+
+# Установка лимитов на количество неудачных попыток входа с помощью Fail2Ban
+echo "Установка Fail2Ban и настройка лимитов на количество неудачных попыток входа..."
+apt install -y fail2ban
+systemctl enable fail2ban
+systemctl start fail2ban
+
+# Настройка лимитов для SSH
+cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
+[sshd]
+enabled = true
+port = ssh
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+findtime = 600
+EOF
+systemctl restart fail2ban
 
 # Настройка SSH
 echo "Настройка SSH..."
@@ -69,3 +98,4 @@ tar -cvpzf /root/backup_$(date +%F).tar.gz --exclude=/proc --exclude=/tmp --excl
 # Завершающие действия
 echo "Система настроена для безопасной работы!"
 echo "Перезагрузите сервер для применения всех изменений."
+
