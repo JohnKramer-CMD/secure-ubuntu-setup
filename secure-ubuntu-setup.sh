@@ -53,7 +53,7 @@ sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 # Запрещаем пустые пароли
 sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/' /etc/ssh/sshd_config
 # Перезапуск SSH
-systemctl restart sshd
+systemctl restart ssh
 
 # Создание нового пользователя (если он не существует)
 NEW_USER="admin"
